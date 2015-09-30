@@ -19,53 +19,47 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 	if ($base64)
 		$url = base64_decode($url);
 
-	if ($data = get_contents($url)) {
-		$data = trim($data);
+	if ($result = get_contents($url, true)) {
+		$data = trim($result[0]);
+		$info = $result[1];
 
 		$parse = parse_url($url);
 
-		if (substr($data, 0, 1) !== '<') {
-			$format = strtolower(substr($parse['path'], -4));
+		if (isset($info['content_type']) && empty($info['content_type']) === false)
+			header('Content-type: ' . $info['content_type']);
+		
+		if (strtolower(substr($data, 0, 9)) === '<!doctype') {
+			if (isset($parse['scheme']) === false)
+				$parse['scheme'] = 'http';
+			if (isset($parse['host']) === false)
+				$parse['host'] = $parse['path'];
 
-			switch ($format) {
-				case '.css': header('Content-type: text/css'); break;
-				case '.jpg': header('Content-type: image/jpeg'); break;
-				case '.jpeg': header('Content-type: image/jpeg'); break;
-				case '.png': header('Content-type: image/png'); break;
-			}
+			$base_url = $parse['scheme'] . '://' . $parse['host'];
 
+			$doc = new DOMDocument();
+			
+			$doc->loadHTML($data);
+
+			foreach (array('a' => 'href', 'link' => 'href', 'img' => 'src', 'script' => 'src', 'form' => 'action') as $name => $attribute)
+				foreach ($doc->getElementsByTagName($name) as $link) {
+					$value = $link->getAttribute($attribute);
+					
+					$parse = parse_url($value);
+					if (isset($parse['scheme']) === false)
+						$value = $base_url . (substr($value, 0, 1) === '/' ? null : '/') . $value;
+
+					if ($base64)
+						$value = base64_encode($value);
+
+					if ($rot13)
+						$value = str_rot13($value);
+
+					$link->setAttribute($attribute, $_SERVER['PHP_SELF'] . '?url=' . $value . ($base64 ? '&base64=1' : null) . ($rot13 ? '&rot13=1' : null));
+				}
+
+			echo $doc->saveHTML();
+		} else
 			die($data);
-		}
-		
-		if (isset($parse['scheme']) === false)
-			$parse['scheme'] = 'http';
-		if (isset($parse['host']) === false)
-			$parse['host'] = $parse['path'];
-
-		$base_url = $parse['scheme'] . '://' . $parse['host'];
-
-		$doc = new DOMDocument();
-		
-		$doc->loadHTML($data);
-
-		foreach (array('a' => 'href', 'link' => 'href', 'img' => 'src', 'script' => 'src', 'form' => 'action') as $name => $attribute)
-			foreach ($doc->getElementsByTagName($name) as $link) {
-				$value = $link->getAttribute($attribute);
-				
-				$parse = parse_url($value);
-				if (isset($parse['scheme']) === false)
-					$value = $base_url . (substr($value, 0, 1) === '/' ? null : '/') . $value;
-
-				if ($base64)
-					$value = base64_encode($value);
-
-				if ($rot13)
-					$value = str_rot13($value);
-
-				$link->setAttribute($attribute, $_SERVER['PHP_SELF'] . '?url=' . $value . ($base64 ? '&base64=1' : null) . ($rot13 ? '&rot13=1' : null));
-			}
-
-		echo $doc->saveHTML();
 	} else
 		die('<strong>Azada error:</strong> Unreachable host.');
 
@@ -120,11 +114,10 @@ function options() {
 </body>
 </html>';
 
-function get_contents($url) {
+function get_contents($url, $return_info = false) {
 	$ch = curl_init();
 
 	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_HEADER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 	curl_setopt($ch, CURLOPT_COOKIEJAR, __DIR__ . '/cookie.txt');
@@ -137,9 +130,12 @@ function get_contents($url) {
 	
 	$data = curl_exec($ch);
 
+	if ($return_info === true)
+		$info = curl_getinfo($ch);
+
 	curl_close($ch);
 
-	return $data;
+	return isset($info) ? array($data, $info) : $data;
 }
 
 ?>
