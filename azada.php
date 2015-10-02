@@ -81,20 +81,22 @@ function $(id) {
 }
 function options() {
 	var url = $("url").value;
+	var result = url;
 
 	if ($("base64").checked == true)
-		url = window.btoa(url);
+		result = window.btoa(result);
 	else
 		$("base64").removeAttribute("name");
 
 	if ($("rot13").checked == true)
-		url = url.replace(/[a-zA-Z]/g,function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);});
+		result = result.replace(/[a-zA-Z]/g,function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);});
 	else
 		$("rot13").removeAttribute("name");
 
-	$("form").innerHTML = "<input name=\"url\" type=\"hidden\" value=\"" + url + "\">" + $("form").innerHTML;
+	$("form").innerHTML = "<input name=\"url\" type=\"hidden\" value=\"" + result + "\">" + $("form").innerHTML;
 	$("url").removeAttribute("name");
-
+	$("url").value = url;
+	
 	return true;
 }
 
