@@ -9,7 +9,7 @@
 error_reporting(0);
 
 if (isset($_GET['url']) && empty($_GET['url']) === false) {
-	$url = $_GET['url'];
+	$url = urldecode($_GET['url']);
 	$rot13 = isset($_GET['rot13']);
 	$base64 = isset($_GET['base64']);
 
