@@ -76,6 +76,8 @@ echo '<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 <title>Azada</title>
 <script type="text/javascript">
+var checks;
+
 function $(id) {
 	return document.getElementById(id);
 }
@@ -83,20 +85,32 @@ function options() {
 	var url = $("url").value;
 	var result = url;
 
-	if ($("base64").checked == true)
+	checks = {
+		base64: $("base64").checked,
+		rot13: $("rot13").checked,
+		new_window: $("new_window").checked
+	}
+
+	if (options.base64 == true)
 		result = window.btoa(result);
 	else
 		$("base64").removeAttribute("name");
 
-	if ($("rot13").checked == true)
+	if (options.rot13 == true)
 		result = result.replace(/[a-zA-Z]/g,function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);});
 	else
 		$("rot13").removeAttribute("name");
 
+	if (options.new_window == true)
+		$("form").setAttribute("target", "_blank");
+
 	$("form").innerHTML = "<input name=\"url\" type=\"hidden\" value=\"" + result + "\">" + $("form").innerHTML;
 	$("url").removeAttribute("name");
 	$("url").value = url;
-	
+
+	for (i in checks)
+		$(i).checked = checks[i];
+
 	return true;
 }
 
@@ -112,7 +126,7 @@ window.onload = function(){
 	URL: <input id="url" name="url" type="text" value=""> <button id="browse" type="submit" disabled>Browse</button><noscript> Please enable javascript</noscript><br>
 	<label><input id="base64" name="base64" type="checkbox" value="1" checked> Base64 encode</label><br>
 	<label><input id="rot13" name="rot13" type="checkbox" value="1" checked> ROT13 encode</label><br>
-	<!--label><input id="new_window" type="checkbox" value="1"> Open in new window</label-->
+	<label><input id="new_window" type="checkbox" value="1"> Open in new window</label>
 	</form>
 </section>
 <br>
