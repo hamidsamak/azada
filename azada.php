@@ -7,6 +7,7 @@
  */
 
 error_reporting(0);
+set_time_limit(15);
 
 if (isset($_GET['url']) && empty($_GET['url']) === false) {
 	$url = urldecode($_GET['url']);
