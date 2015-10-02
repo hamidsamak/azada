@@ -97,13 +97,17 @@ function options() {
 
 	return true;
 }
+
+window.onload = function(){
+	$("browse").removeAttribute("disabled");
+}
 </script>
 </head>
 <body>
 <header><h1>Azada</h1></header>
 <section>
 	<form id="form" method="get" action="' . $_SERVER['PHP_SELF'] . '" onsubmit="return options();">
-	URL: <input id="url" name="url" type="text" value=""> <button type="submit">Browse</button><br>
+	URL: <input id="url" name="url" type="text" value=""> <button id="browse" type="submit" disabled>Browse</button><noscript> Please enable javascript</noscript><br>
 	<label><input id="base64" name="base64" type="checkbox" value="1" checked> Base64 encode</label><br>
 	<label><input id="rot13" name="rot13" type="checkbox" value="1" checked> ROT13 encode</label><br>
 	<!--label><input id="new_window" type="checkbox" value="1"> Open in new window</label-->
