@@ -92,17 +92,17 @@ function options() {
 		new_window: $("new_window").checked
 	}
 
-	if (options.base64 == true)
+	if (checks.base64 == true)
 		result = window.btoa(result);
 	else
 		$("base64").removeAttribute("name");
 
-	if (options.rot13 == true)
+	if (checks.rot13 == true)
 		result = result.replace(/[a-zA-Z]/g,function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);});
 	else
 		$("rot13").removeAttribute("name");
 
-	if (options.new_window == true)
+	if (checks.new_window == true)
 		$("form").setAttribute("target", "_blank");
 
 	$("form").innerHTML = "<input name=\"url\" type=\"hidden\" value=\"" + result + "\">" + $("form").innerHTML;
