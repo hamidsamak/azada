@@ -12,6 +12,7 @@ set_time_limit(15);
 if (isset($_GET['url']) && empty($_GET['url']) === false) {
 	$url = urldecode($_GET['url']);
 	$rot13 = isset($_GET['rot13']);
+	$nojs = isset($_GET['nojs']);
 	$base64 = isset($_GET['base64']);
 
 	if ($rot13)
@@ -43,6 +44,12 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 
 			foreach (array('a' => 'href', 'link' => 'href', 'img' => 'src', 'script' => 'src', 'form' => 'action') as $name => $attribute)
 				foreach ($doc->getElementsByTagName($name) as $link) {
+					if ($name === 'script' && $nojs === true) {
+						$link->parentNode->removeChild($link);
+						
+						continue;
+					}
+
 					$value = $link->getAttribute($attribute);
 					
 					$parse = parse_url($value);
@@ -89,6 +96,7 @@ function options() {
 	checks = {
 		base64: $("base64").checked,
 		rot13: $("rot13").checked,
+		nojs: $("nojs").checked,
 		new_window: $("new_window").checked
 	}
 
@@ -127,6 +135,7 @@ window.onload = function(){
 	URL: <input id="url" name="url" type="text" value=""> <button id="browse" type="submit" disabled>Browse</button><noscript> Please enable javascript</noscript><br>
 	<label><input id="base64" name="base64" type="checkbox" value="1" checked> Base64 encode</label><br>
 	<label><input id="rot13" name="rot13" type="checkbox" value="1" checked> ROT13 encode</label><br>
+	<label><input id="nojs" name="nojs" type="checkbox" value="1"> Remove Javascript</label><br>
 	<label><input id="new_window" type="checkbox" value="1"> Open in new window</label>
 	</form>
 </section>
