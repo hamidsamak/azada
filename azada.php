@@ -43,19 +43,19 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 			
 			$doc->loadHTML($data);
 
-			foreach (array('a' => 'href', 'link' => 'href', 'img' => 'src', 'script' => 'src', 'form' => 'action') as $name => $attribute)
-				foreach ($doc->getElementsByTagName($name) as $link) {
-					if ($name === 'script' && $nojs === true) {
-						$link->parentNode->removeChild($link);
+			foreach (array('a' => 'href', 'link' => 'href', 'img' => 'src', 'script' => 'src', 'form' => 'action') as $tag_name => $attribute)
+				foreach ($doc->getElementsByTagName($tag_name) as $tag) {
+					if ($tag_name === 'script' && $nojs === true) {
+						$tag->parentNode->removeChild($tag);
 						
 						continue;
-					} else if ($name === 'img' && $noimg === true) {
-						$link->setAttribute('src', '#');
+					} else if ($tag_name === 'img' && $noimg === true) {
+						$tag->setAttribute('src', '#');
 
 						continue;
 					}
 
-					$value = $link->getAttribute($attribute);
+					$value = $tag->getAttribute($attribute);
 					
 					$parse = parse_url($value);
 					if (isset($parse['scheme']) === false)
@@ -67,7 +67,7 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 					if ($rot13)
 						$value = str_rot13($value);
 
-					$link->setAttribute($attribute, $_SERVER['PHP_SELF'] . '?url=' . $value . ($base64 ? '&base64=1' : null) . ($rot13 ? '&rot13=1' : null));
+					$tag->setAttribute($attribute, $_SERVER['PHP_SELF'] . '?url=' . $value . ($base64 ? '&base64=1' : null) . ($rot13 ? '&rot13=1' : null));
 				}
 
 			echo $doc->saveHTML();
