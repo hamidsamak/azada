@@ -28,8 +28,35 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 
 		$parse = parse_url($url);
 
-		if (isset($info['content_type']) && empty($info['content_type']) === false)
+		if (isset($info['content_type']) && empty($info['content_type']) === false) {
 			header('Content-type: ' . $info['content_type']);
+
+			if ($info['content_type'] == 'text/css') {
+				preg_match_all("/url\((\"|')(.*?)(\"|')\)/", $data, $matches);
+
+				if (isset($matches[2]) && count($matches[2]) > 0) {
+					$matches[2] = array_unique($matches[2]);
+
+					foreach ($matches[2] as $value) {
+						$address = $value;
+						$parse = parse_url($url);
+
+						if (substr($address, 0, 1) == '/')
+							$address = $parse['scheme'] . '://' . $parse['host'] . $address;
+						else
+							$address = $parse['scheme'] . '://' . $parse['host'] . dirname($parse['path']) . '/' . $address;
+
+						if ($base64)
+							$address = base64_encode($address);
+
+						if ($rot13)
+							$address = str_rot13($address);
+
+						$data = str_replace($value, $_SERVER['PHP_SELF'] . '?url=' . $address . ($base64 ? '&base64=1' : null) . ($rot13 ? '&rot13=1' : null), $data);
+					}
+				}
+			}
+		}
 		
 		if (strtolower(substr($data, 0, 9)) === '<!doctype') {
 			if (isset($parse['scheme']) === false)
