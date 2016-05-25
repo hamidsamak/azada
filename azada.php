@@ -31,6 +31,9 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 		if (isset($info['content_type']) && empty($info['content_type']) === false) {
 			header('Content-type: ' . $info['content_type']);
 
+			if (isset($info['original_headers']['Content-Encoding']))
+				header('Content-Encoding: ' . $info['original_headers']['Content-Encoding']);
+
 			if ($info['content_type'] == 'text/css') {
 				preg_match_all("/url\((\"|')(.*?)(\"|')\)/", $data, $matches);
 
@@ -186,6 +189,7 @@ function get_contents($url, $return_info = false) {
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 	curl_setopt($ch, CURLOPT_COOKIEJAR, __DIR__ . '/cookie.txt');
 	curl_setopt($ch, CURLOPT_COOKIEFILE, __DIR__ . '/cookie.txt');
+	curl_setopt($ch, CURLOPT_HEADER, true);
 
 	if (isset($_POST) && count($_POST) > 0) {
 		curl_setopt($ch, CURLOPT_POST, true);
@@ -194,8 +198,25 @@ function get_contents($url, $return_info = false) {
 	
 	$data = curl_exec($ch);
 
-	if ($return_info === true)
+	while (substr($data, 0, 4) == 'HTTP') {
+		$seperator_position = strpos($data, "\r\n\r\n");
+		$headers = substr($data, 0, $seperator_position);
+		$data = substr($data, $seperator_position + 4);
+	}
+
+	if ($return_info === true) {
 		$info = curl_getinfo($ch);
+
+		$headers = explode("\n", $headers);
+		foreach ($headers as $header) {
+			$seperator_position = strpos($header, ':');
+
+			if ($seperator_position === false)
+				$info['original_headers'][] = $header;
+			else
+				$info['original_headers'][substr($header, 0, $seperator_position)] = trim(substr($header, $seperator_position + 1));
+		}
+	}
 
 	curl_close($ch);
 
