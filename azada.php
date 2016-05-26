@@ -35,12 +35,12 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 				header('Content-Encoding: ' . $info['original_headers']['Content-Encoding']);
 
 			if ($info['content_type'] == 'text/css') {
-				preg_match_all("/url\((\"|')(.*?)(\"|')\)/", $data, $matches);
+				preg_match_all("/url\((.*?)\)/", $data, $matches);
 
-				if (isset($matches[2]) && count($matches[2]) > 0) {
-					$matches[2] = array_unique($matches[2]);
+				if (isset($matches[1]) && count($matches[1]) > 0) {
+					$matches[1] = array_unique($matches[1]);
 
-					foreach ($matches[2] as $value) {
+					foreach ($matches[1] as $value) {
 						$address = $value;
 						$parse = parse_url($url);
 
