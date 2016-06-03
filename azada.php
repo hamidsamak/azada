@@ -10,6 +10,13 @@ error_reporting(0);
 set_time_limit(15);
 
 if (isset($_GET['url']) && empty($_GET['url']) === false) {
+	foreach ($_GET as $key => $value)
+		if (substr($key, 0, 4) === 'amp;' && strlen($key) > 4) {
+			$_GET[substr($key, 4)] = $value;
+
+			unset($_GET[$key]);
+		}
+
 	$url = urldecode($_GET['url']);
 	$rot13 = isset($_GET['rot13']);
 	$noimg = isset($_GET['noimg']);
