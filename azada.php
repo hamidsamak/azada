@@ -107,7 +107,12 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 					$tag->setAttribute($attribute, $_SERVER['PHP_SELF'] . '?url=' . $value . ($base64 ? '&base64=1' : null) . ($rot13 ? '&rot13=1' : null) . ($noimg ? '&noimg=1' : null) . ($nojs ? '&nojs=1' : null));
 				}
 
-			echo $doc->saveHTML();
+			$data = $doc->saveHTML();
+
+			if ($nojs === true)
+				$data = str_ireplace(array('<noscript>', '</noscript>'), '', $data);
+
+			echo $data;
 		} else
 			die($data);
 	} else
