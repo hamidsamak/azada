@@ -128,8 +128,34 @@ echo '<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Azada</title>
+<style type="text/css">
+header, section, footer {
+	width: 50%;
+	margin: 0 auto;
+	padding-top: 10px;
+	max-width: 1000px;
+}
+header {
+	padding: 0;
+	border-bottom: 1px solid #ccc;
+}
+footer {
+	border-top: 1px solid #ccc;
+}
+#url {
+	width: 80%;
+}
+#browse {
+	width: 15%;
+}
+@media only screen and (max-width: 768px) {
+	header, section, footer {
+		width: 100%;
+	}
+}
+</style>
 <script type="text/javascript">
 var checks;
 
@@ -180,7 +206,7 @@ window.onload = function(){
 <header><h1>Azada</h1></header>
 <section>
 	<form id="form" method="get" action="' . $_SERVER['PHP_SELF'] . '" onsubmit="return options();">
-	URL: <input id="url" name="url" type="text" value=""> <button id="browse" type="submit" disabled>Browse</button><noscript> Please enable javascript</noscript><br>
+	<input id="url" name="url" type="text" value="" placeholder="URL&hellip;"> <button id="browse" type="submit" disabled>Browse</button><noscript> Please enable javascript</noscript><br>
 	<label><input id="base64" name="base64" type="checkbox" value="1" checked> Base64 encode</label><br>
 	<label><input id="rot13" name="rot13" type="checkbox" value="1" checked> ROT13 encode</label><br>
 	<label><input id="noimg" name="noimg" type="checkbox" value="1"> Block images</label><br>
