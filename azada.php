@@ -114,9 +114,9 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 
 			echo $data;
 		} else
-			die($data);
+			echo $data;
 	} else
-		die('<strong>Azada error:</strong> Unreachable host.');
+		echo '<strong>Azada error:</strong> Unreachable host.';
 
 	exit;
 }
