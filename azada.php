@@ -121,8 +121,8 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 	exit;
 }
 
-if (file_exists(__DIR__ . '/cookie.txt'))
-	unlink('cookie.txt');
+if (file_exists(__DIR__ . '/.cookie'))
+	unlink('.cookie');
 
 echo '<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
@@ -225,8 +225,8 @@ function get_contents($url, $return_info = false) {
 	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-	curl_setopt($ch, CURLOPT_COOKIEJAR, __DIR__ . '/cookie.txt');
-	curl_setopt($ch, CURLOPT_COOKIEFILE, __DIR__ . '/cookie.txt');
+	curl_setopt($ch, CURLOPT_COOKIEJAR, __DIR__ . '/.cookie');
+	curl_setopt($ch, CURLOPT_COOKIEFILE, __DIR__ . '/.cookie');
 	curl_setopt($ch, CURLOPT_HEADER, true);
 
 	if (isset($_POST) && count($_POST) > 0) {
