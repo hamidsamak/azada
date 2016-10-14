@@ -30,7 +30,7 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 		$url = base64_decode($url);
 
 	if ($result = get_contents($url, true)) {
-		$data = trim($result[0]);
+		$data = $result[0];
 		$info = $result[1];
 
 		$parse = parse_url($url);
@@ -41,8 +41,17 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 			if (isset($info['original_headers']['Content-Encoding']))
 				header('Content-Encoding: ' . $info['original_headers']['Content-Encoding']);
 
+			if (substr($info['content_type'], 0, 5) != 'text/') {
+				$file_name = basename($info['url']);
+
+				if (($pos = strpos($file_name, '?')) !== false)
+					$file_name = substr($file_name, 0, $pos);
+
+				header('Content-Disposition: attachment; filename="' . $file_name . '"');
+			}
+
 			if ($info['content_type'] == 'text/css') {
-				preg_match_all("/url\((.*?)\)/", $data, $matches);
+				preg_match_all("/url\(['|\"](.*?)['|\"]\)/", $data, $matches);
 
 				if (isset($matches[1]) && count($matches[1]) > 0) {
 					$matches[1] = array_unique($matches[1]);
