@@ -51,7 +51,7 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 			}
 
 			if ($info['content_type'] == 'text/css') {
-				preg_match_all("/url\(['|\"](.*?)['|\"]\)/", $data, $matches);
+				preg_match_all("/url\(['|\"]?(.*?)['|\"]?\)/", $data, $matches);
 
 				if (isset($matches[1]) && count($matches[1]) > 0) {
 					$matches[1] = array_unique($matches[1]);
