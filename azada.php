@@ -32,6 +32,7 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 	if ($result = get_contents($url, true)) {
 		$data = $result[0];
 		$info = $result[1];
+		$url = $info['url'];
 
 		$parse = parse_url($url);
 
