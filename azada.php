@@ -100,6 +100,16 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 						$tag->setAttribute('src', '#');
 
 						continue;
+					} else if ($tag_name === 'form') {
+						if (isset($_GET))
+							foreach ($_GET as $key => $value) {
+								$input = $doc->createElement("input");
+
+								foreach (array('name' => $key, 'type' => 'hidden', 'value' => $value) as $input_attribute => $input_attribute_value)
+									$input->setAttribute($input_attribute, $input_attribute_value);
+
+								$tag->insertBefore($input, $tag->firstChild);
+							}
 					}
 
 					$value = $tag->getAttribute($attribute);
