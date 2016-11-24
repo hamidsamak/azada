@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Azada 0.1b
+ * Azada 0.1
  * php web-based proxy
  * https://github.com/hamidsamak/azada
  */
@@ -235,7 +235,7 @@ window.onload = function(){
 	</form>
 </section>
 <br>
-<footer><a href="https://github.com/hamidsamak/azada">Azada 0.1b</a></footer>
+<footer><a href="https://github.com/hamidsamak/azada">Azada 0.1</a></footer>
 </body>
 </html>';
 
