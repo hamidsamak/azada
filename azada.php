@@ -6,6 +6,8 @@
  * https://github.com/hamidsamak/azada
  */
 
+define('AZADA_VERSION', '0.1');
+
 error_reporting(0);
 set_time_limit(15);
 
@@ -235,7 +237,7 @@ window.onload = function(){
 	</form>
 </section>
 <br>
-<footer><a href="https://github.com/hamidsamak/azada">Azada 0.1</a></footer>
+<footer><a href="https://github.com/hamidsamak/azada">Azada ' . AZADA_VERSION . '</a></footer>
 </body>
 </html>';
 
