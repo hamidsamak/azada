@@ -209,7 +209,7 @@ function options() {
 	if (checks.new_window == true)
 		$("form").setAttribute("target", "_blank");
 
-	$("form").innerHTML = "<input name=\"url\" type=\"hidden\" value=\"" + result + "\">" + $("form").innerHTML;
+	$("form").innerHTML = "<input id=\"url_new\" name=\"url\" type=\"hidden\" value=\"" + result + "\">" + $("form").innerHTML;
 	$("url").removeAttribute("name");
 	$("url").value = url;
 
@@ -221,6 +221,9 @@ function options() {
 
 window.onload = function(){
 	$("browse").removeAttribute("disabled");
+
+	if ($("url_new"))
+		$("url_new").parentElement.removeChild($("url_new"));
 }
 </script>
 </head>
