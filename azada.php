@@ -186,6 +186,10 @@ function $(id) {
 }
 function options() {
 	var url = $("url").value;
+
+	if (url.toLowerCase().substr(0, 7) != "http://")
+		url = "http://" + url;
+
 	var result = url;
 
 	checks = {
