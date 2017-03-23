@@ -7,6 +7,7 @@
  */
 
 define('AZADA_VERSION', '0.1');
+define('AZADA_RESERVED_PARAMS', 'url,rot13,noimg,nojs,base64');
 
 error_reporting(0);
 set_time_limit(15);
@@ -30,6 +31,18 @@ if (isset($_GET['url']) && empty($_GET['url']) === false) {
 
 	if ($base64)
 		$url = base64_decode($url);
+
+	if (isset($_GET) && count($_GET) > 0) {
+		$params = array();
+		$reserved_params = explode(',', AZADA_RESERVED_PARAMS);
+
+		foreach ($_GET as $key => $value)
+			if (in_array($key, $reserved_params) === false)
+				$params[] = $key . '=' . urlencode($value);
+
+		if (count($params) > 0)
+			$url .= '?' . implode('&', $params);
+	}
 
 	if ($result = get_contents($url, true)) {
 		$data = $result[0];
